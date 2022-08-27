@@ -1,29 +1,36 @@
 import React, { useState } from "react";
 
-const useInput = (initialValue, validator) => {
-    const [value, setValue] = useState(initialValue);
-    const onChange = (e) => {
-        const {
-            target: { value },
-        } = e;
-        let willUpdate = true;
-        if (typeof validator === "function") {
-            willUpdate = validator(value);
-        }
-        if (willUpdate) {
-            setValue(value);
-        }
+const content = [
+    {
+        tab: "section",
+        content: " I'm the content of the section",
+    },
+    {
+        tab: "section 2",
+        content: " I'm the content of the section 2",
+    },
+];
+
+const useTabs = (initialTab, allTabs) => {
+    const [currentIndex, setCurrentIndex] = useState(initialTab);
+    if (!allTabs || !Array.isArray(allTabs)) {
+        return;
+    }
+    return {
+        currentItem: allTabs[currentIndex] /* currentItem은 allTab를 가지고 리턴될거고 currentIndex를 값으로 가진다. */,
+        changeItem: setCurrentIndex,
     };
-    return { value, onChange };
 };
+
 function App() {
-    const maxLen = (v) => v.length < 10;
-    const name = useInput("Ms.", maxLen); /* useInput에서 value를 반환해서 name과 같아짐 */
+    const { currentItem, changeItem } = useTabs(0, content);
     return (
         <div>
             <h1>Hello</h1>
-            <input type="text" placeholder="Name" {...name} />
-            {/* value={name.value} onChange={name.onChange} 로 안하고 {...name}을 해도 name안에 있는 것들을 반환해준 다는 뜻으로 값은 같게 출력됨 */}
+            {content.map((section, index) => (
+                <button onClick={() => changeItem(index)}>{section.tab}</button>
+            ))}
+            <div>{currentItem.content}</div>
         </div>
     );
 }
