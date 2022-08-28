@@ -1,36 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const content = [
-    {
-        tab: "section",
-        content: " I'm the content of the section",
-    },
-    {
-        tab: "section 2",
-        content: " I'm the content of the section 2",
-    },
-];
-
-const useTabs = (initialTab, allTabs) => {
-    const [currentIndex, setCurrentIndex] = useState(initialTab);
-    if (!allTabs || !Array.isArray(allTabs)) {
-        return;
-    }
-    return {
-        currentItem: allTabs[currentIndex] /* currentItem은 allTab를 가지고 리턴될거고 currentIndex를 값으로 가진다. */,
-        changeItem: setCurrentIndex,
+const useTitle = (initialTitle) => {
+    const [title, setTitle] = useState(initialTitle);
+    const updateTitle = () => {
+        const htmlTitle = document.querySelector("title");
+        htmlTitle.innerText = title;
     };
+    useEffect(updateTitle, [title]);
+    return setTitle;
 };
 
 function App() {
-    const { currentItem, changeItem } = useTabs(0, content);
+    const titleUpdater = useTitle("Loading...");
+    setTimeout(() => titleUpdater("Home"), 5000);
     return (
         <div>
             <h1>Hello</h1>
-            {content.map((section, index) => (
-                <button onClick={() => changeItem(index)}>{section.tab}</button>
-            ))}
-            <div>{currentItem.content}</div>
         </div>
     );
 }
