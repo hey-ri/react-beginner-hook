@@ -1,31 +1,32 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
-const useFadeIn = (duration = 1, delay = 0) => {
-    const element = useRef();
-    useEffect(() => {
-        if (element.current) {
-            const { current } = element;
-            current.style.transition = `all ${duration}s ease-in-out ${delay}s`;
-            current.style.opacity = 1;
+const useNetwork = (onChange) => {
+    const [status, setStatus] = useState(navigator.onLine);
+    const handleChange = () => {
+        if (typeof onChange === "function") {
+            onChange(navigator.onLine);
         }
+        setStatus(navigator.onLine);
+    };
+    useEffect(() => {
+        window.addEventListener("online", handleChange);
+        window.addEventListener("offline", handleChange);
+        return () => {
+            window.removeEventListener("online", handleChange);
+            window.removeEventListener("offline", handleChange);
+        };
     }, []);
-    if (typeof duration !== "number" || typeof delay !== "number") {
-        return;
-    }
-    return { ref: element, style: { opacity: 0 } };
+    return status;
 };
 
 function App() {
-    const fadeInh1 = useFadeIn(0, 1);
-    const fadeInp = useFadeIn(5, 5);
+    const handleNetworkChange = (online) => {
+        console.log(online ? "we just onlinhe" : "we are offline");
+    };
+    const onLine = useNetwork(handleNetworkChange);
     return (
         <div>
-            <h1 {...fadeInh1}>Hello</h1>
-            <p {...fadeInp}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, deserunt unde! Hic vitae, ipsam eum
-                commodi dicta sint, nulla ratione voluptatibus saepe, repellendus accusantium illum voluptas at quia
-                quos nam?
-            </p>
+            <h1>{onLine ? "onLine" : "offLine"}</h1>
         </div>
     );
 }
