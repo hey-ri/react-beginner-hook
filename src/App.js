@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from "react";
-
-const useTitle = (initialTitle) => {
-    const [title, setTitle] = useState(initialTitle);
-    const updateTitle = () => {
-        const htmlTitle = document.querySelector("title");
-        htmlTitle.innerText = title;
-    };
-    useEffect(updateTitle, [title]);
-    return setTitle;
-};
+import React, { useRef } from "react";
 
 function App() {
-    const titleUpdater = useTitle("Loading...");
-    setTimeout(() => titleUpdater("Home"), 5000);
+    const potato = useRef();
+    setTimeout(() => potato.current.focus(), 3000); /* getElementByID와 같은것 */
     return (
         <div>
             <h1>Hello</h1>
+            <input type="text" placeholder="la" ref={potato} />
         </div>
     );
 }
