@@ -1,12 +1,21 @@
-import React, { useRef } from "react";
+import React from "react";
+
+const useBeforeLeave = () => {
+    const listener = (e) => {
+        e.preventDefault();
+        e.returnValue = "";
+    };
+    const enablePrevent = () => window.addEventListener("beforeunload", listener);
+    const disablePrevent = () => window.removeEventListener("beforeunload", listener);
+    return { enablePrevent, disablePrevent };
+};
 
 function App() {
-    const potato = useRef();
-    setTimeout(() => potato.current.focus(), 3000); /* getElementByID와 같은것 */
+    const { enablePrevent, disablePrevent } = useBeforeLeave();
     return (
         <div>
-            <h1>Hello</h1>
-            <input type="text" placeholder="la" ref={potato} />
+            <button onClick={enablePrevent}>protect</button>
+            <button onClick={disablePrevent}>unprotect</button>
         </div>
     );
 }
